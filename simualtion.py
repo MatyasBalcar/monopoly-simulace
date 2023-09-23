@@ -1,6 +1,6 @@
 #THIS PROJECT WAS MADE TO SIMULATE A GAME OF MONOPOLY, WITH ABILITY TO SIMULATE FRoM ANY GAME POSITION
 #!PRICES ARE IN MILIONS
-import random
+import random,os
 from time import sleep as wait
 players=[
 
@@ -105,12 +105,26 @@ owned_buildings=[]
 
 games=0
 turns=0
+gamesNumber=1
 for player in players:
     wins_loses[player.name]=0
 def printBuildings(player):
     for i in player.owned_buildings:
         print(f"{board[i].name} | {board[i].price}")
+gamesNumber=int(input('Number of games: '))
+setina=0
+old_desetina = None
 while True:
+    if games!=0:
+        setina = int((games/gamesNumber)*100)
+
+    if not old_desetina == setina:
+        os.system('cls')
+        print(((setina)*'█')+(99-setina)*'▒')
+        print(str(setina+1)+'%')
+        old_desetina = setina
+    
+    
     for player in players:
         roll = diceRoll(1)
         #*Rolling dice
@@ -144,6 +158,7 @@ while True:
         draws+=1
         games+=1
 
+
         turns=0
         owned_buildings=[]
         players=[
@@ -155,12 +170,12 @@ while True:
         hrac_1=Player(15,"bali")
         hrac_2=Player(15,"fofo")
         hrac_3=Player(15,"kamil")
-    print(drawBoard(board))
+    #print(drawBoard(board))
     for player in players:
         #print(f"{player.name} has {player.money} M")
         if player.money<0 :
 
-            print(f"Player {player.name} has lost!!!")
+            #print(f"Player {player.name} has lost!!!")
             #printBuildings(player)
             player.loses+=1
             
@@ -184,7 +199,7 @@ while True:
             hrac_2=Player(15,"fofo")
     
      
-    if games>=1:
+    if games>=gamesNumber:
         print(f'simulated {games} games')
         with open("results.txt",'a') as f:
             for player in wins_loses:
