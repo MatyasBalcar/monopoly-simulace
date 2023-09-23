@@ -8,6 +8,10 @@ players=[
 players_dict={
 
 }
+wins_loses={
+
+}
+draws=0
 class Player:
     def  __init__(self, money,name):
         self.money=money
@@ -19,6 +23,8 @@ class Player:
         self.current_position=0
         players.append(self)
         players_dict[self.name]=self
+        self.wins=0
+        self.loses=0
 
 class Building:
     def __init__(self,number,price,name,color):
@@ -45,6 +51,16 @@ board=[
     Building(8,1,'Jindriska ulice','light_blue'),
     Building(9,1.2,'Vinohradska ulice','light_blue'),
     Building(10,0,'Vezeni', "special"),
+    Building(11,1.4,'Prvni ruzova', "pink"),
+    Building(12,2,'Elektrarna', "energy"),
+    Building(13,1.4,'Druha ruzova', "pink"),
+    Building(14,1.6,'Treti ruzova', "pink"),
+    Building(15,2,'Holesovice nadrazi', "train"),
+    Building(16,1.8,'Prvni oranzova', "orange"),
+    Building(17,0,'Sance', "special"),
+    Building(18,1.8,'Druha oranzova', "orange"),
+    Building(19,2,'Treti oranzova', "orange"),
+    Building(20,0,'Parkovani', "special"),
     
 
 ]
@@ -83,9 +99,14 @@ def drawBoard(board_arg):
 
 hrac_1=Player(15,"bali")
 hrac_2=Player(15,"fofo")
+hrac_3=Player(15,"kamil")
 
 owned_buildings=[]
 
+games=0
+turns=0
+for player in players:
+    wins_loses[player.name]=0
 def printBuildings(player):
     for i in player.owned_buildings:
         print(f"{board[i].name} | {board[i].price}")
@@ -100,36 +121,76 @@ while True:
             fuzzyPosition=player.current_position+roll - len(board)
             player.current_position=0
             player.current_position+=fuzzyPosition
-            print(f"{player.name} passed the start, got 2M")
-            player.money+=2
+            #print(f"{player.name} passed the start, got 2M")
+            player.money+=1
 
         #*Buying things
         if player.money>=board[player.current_position].price and player.current_position not in owned_buildings and board[player.current_position].color!='special':
             player.money-=board[player.current_position].price
             player.owned_buildings.append(player.current_position)
             owned_buildings.append(player.current_position)
-            print(f"{player.name} bought {board[player.current_position].name}, money remaining {player.money}")
+            #print(f"{player.name} bought {board[player.current_position].name}, money remaining {player.money}")
         if player.current_position in owned_buildings  and player.current_position not in player.owned_buildings:
 
             for i in players:
                 
                 if player.current_position in i.owned_buildings:
-                    player.money-=board[player.current_position].price
-                    i.money+=board[player.current_position].price
-                    print(f"{player.name} paid {board[player.current_position].price} for {board[player.current_position].name} to {i.name}")
+                    player.money-=board[player.current_position].price/2#! TO BE REVISE LATER
+                    i.money+=board[player.current_position].price/2
+                    #print(f"{player.name} paid {board[player.current_position].price/2} for {board[player.current_position].name} to {i.name}")
                     pass
-        
+    turns+=1   
+    if turns>1000:
+        draws+=1
+        games+=1
+
+        turns=0
+        owned_buildings=[]
+        players=[
+
+        ]
+        players_dict={
+
+        }
+        hrac_1=Player(15,"bali")
+        hrac_2=Player(15,"fofo")
+        hrac_3=Player(15,"kamil")
     print(drawBoard(board))
     for player in players:
-        print(f"{player.name} has {player.money} M")
+        #print(f"{player.name} has {player.money} M")
         if player.money<0 :
+
             print(f"Player {player.name} has lost!!!")
-            printBuildings(player)
-            wait(1000)
-        elif  player.money>100:
-            print(f"Player {player.name} has won")
-            printBuildings(player)
-            wait(1000)
+            #printBuildings(player)
+            player.loses+=1
+            
+            for i in players:
+                if i.name!=player.name:
+                    i.wins+=1
+                    wins_loses[i.name]+=1
+
+
+            games+=1
+
+            turns=0
+            owned_buildings=[]
+            players=[
+
+            ]
+            players_dict={
+
+            }
+            hrac_1=Player(15,"bali")
+            hrac_2=Player(15,"fofo")
+    
+     
+    if games>=1:
+        print(f'simulated {games} games')
+        with open("results.txt",'a') as f:
+            for player in wins_loses:
+                f.write(str(player)+str(wins_loses[player])+'\n')
+            f.write("\ndraws"+str(draws))
+        wait(1000)
 
     #continue_=input("press enter to continue")
 """
