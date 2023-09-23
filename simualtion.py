@@ -89,7 +89,7 @@ owned_buildings=[]
 while True:
     for player in players:
         roll = diceRoll(1)
-
+        #*Rolling dice
         if player.current_position+roll<len(board):
             player.current_position+=roll
             
@@ -97,14 +97,18 @@ while True:
             fuzzyPosition=player.current_position+roll - len(board)
             player.current_position=0
             player.current_position+=fuzzyPosition
+            print(f"{player.name} passed the start, got 2M")
+            player.money+=2
         #print(f"""{player.name} is curently on {board[player.current_position].name}\n
                # The price is {board[player.current_position].price}
              # """)
+        #*Buying things
         if player.money>=board[player.current_position].price and player.current_position not in owned_buildings and board[player.current_position].color!='special':
             player.money-=board[player.current_position].price
             player.owned_buildings.append(player.current_position)
             owned_buildings.append(player.current_position)
             print(f"{player.name} bought {board[player.current_position].name}, money remaining {player.money}")
+
         
 
         
