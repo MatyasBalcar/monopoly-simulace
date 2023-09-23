@@ -100,8 +100,8 @@ while True:
             fuzzyPosition=player.current_position+roll - len(board)
             player.current_position=0
             player.current_position+=fuzzyPosition
-            #print(f"{player.name} passed the start, got 2M")
-            #player.money+=2S
+            print(f"{player.name} passed the start, got 2M")
+            player.money+=2
 
         #*Buying things
         if player.money>=board[player.current_position].price and player.current_position not in owned_buildings and board[player.current_position].color!='special':
