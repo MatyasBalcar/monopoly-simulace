@@ -86,6 +86,9 @@ hrac_2=Player(15,"fofo")
 
 owned_buildings=[]
 
+def printBuildings(player):
+    for i in player.owned_buildings:
+        print(f"{board[i].name} | {board[i].price}")
 while True:
     for player in players:
         roll = diceRoll(1)
@@ -97,25 +100,42 @@ while True:
             fuzzyPosition=player.current_position+roll - len(board)
             player.current_position=0
             player.current_position+=fuzzyPosition
-            print(f"{player.name} passed the start, got 2M")
-            player.money+=2
-        #print(f"""{player.name} is curently on {board[player.current_position].name}\n
-               # The price is {board[player.current_position].price}
-             # """)
+            #print(f"{player.name} passed the start, got 2M")
+            #player.money+=2S
+
         #*Buying things
         if player.money>=board[player.current_position].price and player.current_position not in owned_buildings and board[player.current_position].color!='special':
             player.money-=board[player.current_position].price
             player.owned_buildings.append(player.current_position)
             owned_buildings.append(player.current_position)
             print(f"{player.name} bought {board[player.current_position].name}, money remaining {player.money}")
+        if player.current_position in owned_buildings  and player.current_position not in player.owned_buildings:
 
-        
-
-        
+            for i in players:
+                
+                if player.current_position in i.owned_buildings:
+                    player.money-=board[player.current_position].price
+                    i.money+=board[player.current_position].price
+                    print(f"{player.name} paid {board[player.current_position].price} for {board[player.current_position].name} to {i.name}")
+                    pass
         
     print(drawBoard(board))
+    for player in players:
+        print(f"{player.name} has {player.money} M")
+        if player.money<0 :
+            print(f"Player {player.name} has lost!!!")
+            printBuildings(player)
+            wait(1000)
+        elif  player.money>100:
+            print(f"Player {player.name} has won")
+            printBuildings(player)
+            wait(1000)
+
     #continue_=input("press enter to continue")
+"""
     if len(owned_buildings)>=6:
         print("ALL BUILDING BOUGHT")
         continue_=input("press enter to continue")
+"""
+
     
