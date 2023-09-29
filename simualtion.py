@@ -68,6 +68,28 @@ board=[
     Building(18,1.8,'Druha oranzova', "orange",[0.12, 1.8, 5.0, 7.0, 9.0],[16,18,19],1),
     Building(19,2,'Treti oranzova', "orange",[0.12, 1.8, 5.0, 7.0, 9.0],[16,18,19],1),
     Building(20,0,'Parkovani', "special"),
+    Building(21,2.2, "Strand", "Red", [0.14, 0.7, 2.0, 5.5, 7.5, 9.5]),
+    Building(22,0,'Sance', "special"),
+    Building(23,2.2, "Fleet Street", "Red", [0.14, 0.7, 2.0, 5.5, 7.5, 9.5]),
+    Building(24,2.2, "Trafalgar Square", "Red", [0.14, 0.7, 2.0, 5.5, 7.5, 9.5]),
+    Building(25,0,'Nadrazi 3', "train"),
+    Building(26, 2.6,"Leicester Square", "Yellow", [0.16, 0.8, 2.2, 6.0, 8.0, 10.0]),
+    Building(27, 2.6,"Coventry Street", "Yellow", [0.16, 0.8, 2.2, 6.0, 8.0, 10.0]),
+    Building(28,2,'Vodarna', "energy"),
+    Building(29, 2.6,"Piccadilly", "Yellow", [0.16, 0.8, 2.2, 6.0, 8.0, 10.0]),
+    Building(30,0,'Go to jail', "special"),
+    Building(31, 3,"Regent Street", "Green", [0.18, 0.9, 2.5, 7.0, 8.75, 10.5]),
+    Building(32,0,'Pokladna', "special"),
+    Building(33, 3,"Oxford Street", "Green", [0.18, 0.9, 2.5, 7.0, 8.75, 10.5]),
+    Building(34, 3,"Bond Street", "Green", [0.18, 0.9, 2.5, 7.0, 8.75, 10.5]),
+    Building(35,0,'Nadrazi 4', "train"),
+    Building(36,0,'Sance', "special"),
+    Building(38, 3.5,"Park Lane", "Dark Blue", [0.5, 2.5, 7.0, 17.5, 20.5, 23.0]),
+    Building(39,-1,'Dan', "special"),
+    Building(40, 3.5,"Mayfair", "Dark Blue", [0.5, 2.5, 7.0, 17.5, 20.5, 23.0])
+
+
+
     
 
 ]
@@ -86,7 +108,7 @@ def diceRoll(number_of_dices):
         roll=random.randint(1,6)
         if previous_roll!=0:
             if previous_roll==roll:
-                print("rolling again")
+                #print("rolling again")
                 roll=random.randint(1,6)
             total+=roll
             dice_rolls.append(roll)
@@ -142,7 +164,7 @@ while True:
     
     
     for player in players:
-        roll = diceRoll(1)
+        roll = diceRoll(2)
         #*Rolling dice
         if player.current_position+roll<len(board):
             player.current_position+=roll
