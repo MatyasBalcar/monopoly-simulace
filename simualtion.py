@@ -31,6 +31,7 @@ class Player:
         players_dict[self.name]=self
         self.wins=0
         self.loses=0
+        self.inJail=False
 
 class Building:
     def __init__(self,number,price,name,color,rent=[],sada=[],housePrice=0):
@@ -167,6 +168,14 @@ while True:
     
     
     for player in players:
+
+        if player.inJail:
+            roll1=diceRoll(1)
+            roll2=diceRoll(1)
+            if roll1!=roll2:
+                continue
+            else:
+                player.inJail=False
         roll = diceRoll(2)
         #*Rolling dice
         if player.current_position+roll<len(board):
@@ -191,8 +200,12 @@ while True:
                 
                 if player.current_position in i.owned_buildings and position.houses==0:
                     if position.color=='special':
-                        player.money-=position.price/2
-                        i.money+=position.price/2
+                        if position.name=='Go to jail':
+                            player.current_position=10
+                            if player.money>0.5:
+                                player.inJail=False
+                            else:
+                                player.inJail=True
                     elif position.color=='train':
                         count=0
                         for build_id in train_positions:
@@ -300,7 +313,7 @@ while True:
                 f.write(str(player)+'|'+str(wins_loses[player])+'\n')
             f.write("\ndraws"+str(draws))
 
-            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought\n {HOTELSBOUGHT} hotels were bought\n If each turn took a minute on average, this simulation would have taken {TURNSGLOBAL*gamesNumber/60} hours, the simulation took {(end_time-start_time)/60} minutes")
+            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought\n {HOTELSBOUGHT} hotels were bought\n If each turn took a minute on average, this simulation would have taken {round(TURNSGLOBAL*gamesNumber/60)} hours, the simulation took {round((end_time-start_time)/60,2)} minutes")
         print("Check results in results.txt")
         wait(1000)
 
