@@ -19,10 +19,10 @@ HOTELSBOUGHT=0
 TURNSGLOBAL=0
 start_time=time.time()
 class Player:
-    def  __init__(self, money,name):
+    def  __init__(self, money,name,owned_buildings=[]):
         self.money=money
         self.name=name
-        self.owned_buildings=[]
+        self.owned_buildings=owned_buildings
         self.houses=0
         self.hotels=0
         self.jailcards=0
@@ -94,9 +94,6 @@ board=[
     Building(40, 3.5,"Mayfair", "Dark Blue", [0.5, 2.5, 7.0, 17.5, 20.5, 23.0])
 
 
-
-    
-
 ]
 '''
 brown_rent = [0.04, 0.2, 0.6, 1.8, 3.2, 4.5]
@@ -137,6 +134,7 @@ def drawBoard(board_arg):
 
         board+=("]")
     return board
+
 
 hrac_1=Player(15,"kamil")
 hrac_2=Player(15,"fofo")
@@ -318,10 +316,5 @@ while True:
         wait(1000)
 
     #continue_=input("press enter to continue")
-"""
-    if len(owned_buildings)>=6:
-        print("ALL BUILDING BOUGHT")
-        continue_=input("press enter to continue")
-"""
 
     
