@@ -1,6 +1,6 @@
 #THIS PROJECT WAS MADE TO SIMULATE A GAME OF MONOPOLY, WITH ABILITY TO SIMULATE FRoM ANY GAME POSITION
 #!PRICES ARE IN MILIONS
-import random,os
+import random,os,time
 from time import sleep as wait
 players=[
 
@@ -16,6 +16,8 @@ train_positions=[5,15,25,35]
 energy_positions=[12,28]
 HOUSESBOUGHT=0
 HOTELSBOUGHT=0
+TURNSGLOBAL=0
+start_time=time.time()
 class Player:
     def  __init__(self, money,name):
         self.money=money
@@ -135,9 +137,8 @@ def drawBoard(board_arg):
         board+=("]")
     return board
 
-hrac_1=Player(15,"bali")
+hrac_1=Player(15,"kamil")
 hrac_2=Player(15,"fofo")
-hrac_3=Player(15,"kamil")
 
 owned_buildings=[]
 
@@ -215,7 +216,7 @@ while True:
                     elif not position.hasHotel:
                         player.money-=position.rent[position.houses]
                         i.money+=position.rent[position.houses]
-                    else:
+                    elif position.hasHotel:
                         player.money-=position.rent[4]
                         i.money+=position.rent[4]
 
@@ -244,7 +245,8 @@ while True:
 
 
                     
-    turns+=1   
+    turns+=1 
+    TURNSGLOBAL+=1  
 
     if turns>moves:
         draws+=1
@@ -259,9 +261,8 @@ while True:
         players_dict={
 
         }
-        hrac_1=Player(15,"bali")
+        hrac_1=Player(15,"kamil")
         hrac_2=Player(15,"fofo")
-        hrac_3=Player(15,"kamil")
     #print(drawBoard(board))
     for player in players:
         #print(f"{player.name} has {player.money} M")
@@ -287,17 +288,19 @@ while True:
             players_dict={
 
             }
-            hrac_1=Player(15,"bali")
+            hrac_1=Player(15,"kamil")
             hrac_2=Player(15,"fofo")
     
      
     if games>=gamesNumber:
         print(f'simulated {games} games')
+        end_time=time.time()
         with open("results.txt",'a') as f:
             for player in wins_loses:
                 f.write(str(player)+'|'+str(wins_loses[player])+'\n')
             f.write("\ndraws"+str(draws))
-            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought\n {HOTELSBOUGHT} hotels were bought")
+
+            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought\n {HOTELSBOUGHT} hotels were bought\n If each turn took a minute on average, this simulation would have taken {TURNSGLOBAL*gamesNumber/60} hours, the simulation took {(end_time-start_time)/60} minutes")
         print("Check results in results.txt")
         wait(1000)
 
