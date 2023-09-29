@@ -13,6 +13,7 @@ wins_loses={
 }
 draws=0
 HOUSESBOUGHT=0
+HOTELSBOUGHT=0
 class Player:
     def  __init__(self, money,name):
         self.money=money
@@ -151,7 +152,7 @@ while True:
             player.current_position=0
             player.current_position+=fuzzyPosition
             #print(f"{player.name} passed the start, got 2M")
-            player.money+=1
+            player.money+=2
         position=board[player.current_position]
         #*Buying things
         if player.money>=position.price and player.current_position not in owned_buildings and position.color!='special':
@@ -176,7 +177,8 @@ while True:
                         i.money+=position.rent[4]
 
                     #print(f"{player.name} paid {position.price/2} for {position.name} to {i.name}")
-        if player.current_position in player.owned_buildings and position.houses<4:
+        if player.current_position in player.owned_buildings and position.houses<=4:
+            
             color = position.color
             maSadu=False
             for cislo_budovy in position.sada:
@@ -185,10 +187,16 @@ while True:
                     break
                 else:
                     maSadu=True
-            if maSadu and player.money>position.housePrice:
+            if maSadu and position.houses==4 and player.money>position.housePrice:
+                player.money-=position.housePrice
+                position.houses=0
+                position.hasHotel=True
+                HOTELSBOUGHT+=1
+            elif maSadu and player.money>position.housePrice:
                 player.money-=position.housePrice
                 position.houses+=1
                 HOUSESBOUGHT+=1
+        
 
 
 
@@ -246,7 +254,7 @@ while True:
             for player in wins_loses:
                 f.write(str(player)+'|'+str(wins_loses[player])+'\n')
             f.write("\ndraws"+str(draws))
-            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought")
+            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought\n {HOTELSBOUGHT} hotels were bought")
         print("Check results in results.txt")
         wait(1000)
 
