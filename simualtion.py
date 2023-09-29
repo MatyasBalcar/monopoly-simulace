@@ -12,6 +12,7 @@ wins_loses={
 
 }
 draws=0
+HOUSESBOUGHT=0
 class Player:
     def  __init__(self, money,name):
         self.money=money
@@ -27,13 +28,18 @@ class Player:
         self.loses=0
 
 class Building:
-    def __init__(self,number,price,name,color):
+    def __init__(self,number,price,name,color,rent=[],sada=[],housePrice=0):
         self.number=number
         self.price=price
         self.name=name
         self.hotels=0
         self.houses=0
         self.color = color
+        self.rent = rent#array of rent in format [basic, 1 house..., 4 houses, hotel]
+        self.houses=0
+        self.hasHotel=False
+        self.sada=sada
+        self.housePrice=housePrice
 
 class Game:
     def __init__(self, numberOfPlayers,board):
@@ -41,29 +47,36 @@ class Game:
         self.board=board
 board=[
     Building(0,0,'Start','special'),
-    Building(1,0.6,'Klementska ulice','brown'),
+    Building(1,0.6,'Klementska ulice','brown',[0.04, 0.6, 1.8, 3.2, 4.5],[1,3],1),
     Building(2,0,'Pokladna','special'),
-    Building(3,0.6,'Revolucni ulice','brown'),
+    Building(3,0.6,'Revolucni ulice','brown',[0.04, 0.6, 1.8, 3.2, 4.5],[1,3],1),
     Building(4,0,'Dan z prijmu', 'special'),
     Building(5,2,'Wilsonovo nadrazi', 'train'),
-    Building(6,1,'Panska ulice', 'light_blue'),
+    Building(6,1,'Panska ulice', 'light_blue',[0.08, 1.0, 3.0, 4.5, 6.0],[6,8,9],1),
     Building(7,0,'Sance','special' ),
-    Building(8,1,'Jindriska ulice','light_blue'),
-    Building(9,1.2,'Vinohradska ulice','light_blue'),
+    Building(8,1,'Jindriska ulice','light_blue',[0.08, 1.0, 3.0, 4.5, 6.0],[6,8,9],1),
+    Building(9,1.2,'Vinohradska ulice','light_blue',[0.08, 1.0, 3.0, 4.5, 6.0],[6,8,9],1),
     Building(10,0,'Vezeni', "special"),
-    Building(11,1.4,'Prvni ruzova', "pink"),
+    Building(11,1.4,'Prvni ruzova', "pink",[0.1, 1.5, 4.5, 6.25, 7.5],[11,13,14],1),
     Building(12,2,'Elektrarna', "energy"),
-    Building(13,1.4,'Druha ruzova', "pink"),
-    Building(14,1.6,'Treti ruzova', "pink"),
+    Building(13,1.4,'Druha ruzova', "pink",[0.1, 1.5, 4.5, 6.25, 7.5],[11,13,14],1),
+    Building(14,1.6,'Treti ruzova', "pink",[0.1, 1.5, 4.5, 6.25, 7.5],[11,13,14],1),
     Building(15,2,'Holesovice nadrazi', "train"),
-    Building(16,1.8,'Prvni oranzova', "orange"),
+    Building(16,1.8,'Prvni oranzova', "orange",[0.12, 1.8, 5.0, 7.0, 9.0],[16,18,19],1),
     Building(17,0,'Sance', "special"),
-    Building(18,1.8,'Druha oranzova', "orange"),
-    Building(19,2,'Treti oranzova', "orange"),
+    Building(18,1.8,'Druha oranzova', "orange",[0.12, 1.8, 5.0, 7.0, 9.0],[16,18,19],1),
+    Building(19,2,'Treti oranzova', "orange",[0.12, 1.8, 5.0, 7.0, 9.0],[16,18,19],1),
     Building(20,0,'Parkovani', "special"),
     
 
 ]
+'''
+brown_rent = [0.04, 0.2, 0.6, 1.8, 3.2, 4.5]
+light_blue_rent = [0.08, 0.4, 1.0, 3.0, 4.5, 6.0]
+pink_rent = [0.1, 0.5, 1.5, 4.5, 6.25, 7.5]
+orange_rent = [0.12, 0.6, 1.8, 5.0, 7.0, 9.0]
+
+'''
 def diceRoll(number_of_dices):
     total=0
     dice_rolls=[]
@@ -112,6 +125,8 @@ def printBuildings(player):
     for i in player.owned_buildings:
         print(f"{board[i].name} | {board[i].price}")
 gamesNumber=int(input('Number of games: '))
+moves=1000
+moves = int(input("How many turns till a draw: "))
 setina=0
 old_desetina = None
 while True:
@@ -137,24 +152,50 @@ while True:
             player.current_position+=fuzzyPosition
             #print(f"{player.name} passed the start, got 2M")
             player.money+=1
-
+        position=board[player.current_position]
         #*Buying things
-        if player.money>=board[player.current_position].price and player.current_position not in owned_buildings and board[player.current_position].color!='special':
-            player.money-=board[player.current_position].price
+        if player.money>=position.price and player.current_position not in owned_buildings and position.color!='special':
+            player.money-=position.price
             player.owned_buildings.append(player.current_position)
             owned_buildings.append(player.current_position)
-            #print(f"{player.name} bought {board[player.current_position].name}, money remaining {player.money}")
+            #print(f"{player.name} bought {position.name}, money remaining {player.money}")
         if player.current_position in owned_buildings  and player.current_position not in player.owned_buildings:
 
             for i in players:
                 
-                if player.current_position in i.owned_buildings:
-                    player.money-=board[player.current_position].price/2#! TO BE REVISE LATER
-                    i.money+=board[player.current_position].price/2
-                    #print(f"{player.name} paid {board[player.current_position].price/2} for {board[player.current_position].name} to {i.name}")
-                    pass
+                if player.current_position in i.owned_buildings and position.houses==0:
+                    if position.color=='special' or  position.color=='train' or  position.color=='energy':
+                        player.money-=position.price/2
+                        i.money+=position.price/2
+
+                    elif not position.hasHotel:
+                        player.money-=position.rent[position.houses]
+                        i.money+=position.rent[position.houses]
+                    else:
+                        player.money-=position.rent[4]
+                        i.money+=position.rent[4]
+
+                    #print(f"{player.name} paid {position.price/2} for {position.name} to {i.name}")
+        if player.current_position in player.owned_buildings and position.houses<4:
+            color = position.color
+            maSadu=False
+            for cislo_budovy in position.sada:
+                if cislo_budovy not in player.owned_buildings:
+                    maSadu=False
+                    break
+                else:
+                    maSadu=True
+            if maSadu and player.money>position.housePrice:
+                player.money-=position.housePrice
+                position.houses+=1
+                HOUSESBOUGHT+=1
+
+
+
+                    
     turns+=1   
-    if turns>1000:
+
+    if turns>moves:
         draws+=1
         games+=1
 
@@ -203,8 +244,10 @@ while True:
         print(f'simulated {games} games')
         with open("results.txt",'a') as f:
             for player in wins_loses:
-                f.write(str(player)+str(wins_loses[player])+'\n')
+                f.write(str(player)+'|'+str(wins_loses[player])+'\n')
             f.write("\ndraws"+str(draws))
+            f.write(f"\n Draw is defined as a game that lasted more than {moves} moves.\n {HOUSESBOUGHT} houses were bought")
+        print("Check results in results.txt")
         wait(1000)
 
     #continue_=input("press enter to continue")
