@@ -13,6 +13,7 @@ wins_loses={
 }
 draws=0
 train_positions=[5,15,25,35]
+energy_positions=[12,28]
 HOUSESBOUGHT=0
 HOTELSBOUGHT=0
 class Player:
@@ -188,7 +189,7 @@ while True:
             for i in players:
                 
                 if player.current_position in i.owned_buildings and position.houses==0:
-                    if position.color=='special' or  position.color=='train' or  position.color=='energy':
+                    if position.color=='special':
                         player.money-=position.price/2
                         i.money+=position.price/2
                     elif position.color=='train':
@@ -198,6 +199,18 @@ while True:
                                 count+=1
                         player.money-=count*0.5
                         i.money+=count*0.5
+                    elif position.color=='energy':
+                        count=0
+                        for build_id in energy_positions:
+                            if build_id in player.owned_buildings:
+                                count+=1
+                        amount=0
+                        if count==1:
+                            amount=diceRoll(2)*0.04
+                        elif count==2:
+                            amount=diceRoll(2)*0.1
+                        player.money-=amount
+                        i.money+=amount
                                 
                     elif not position.hasHotel:
                         player.money-=position.rent[position.houses]
