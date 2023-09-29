@@ -1,0 +1,8 @@
+bali|486
+fofo|400
+kamil|49
+
+draws149
+ Draw is defined as a game that lasted more than 10000 moves.
+ 95511 houses were bought
+ 23873 hotels were bought
